@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VerifyKYC Application</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; }
+    .upload-area {
+      border: 2px dashed #007bff;
+      border-radius: 8px;
+      padding: 2em;
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 2em;
+      cursor: pointer;
+    }
+    .upload-area.dragover {
+      background: #e6f7ff;
+    }
+    input[type="file"] { display: none; }
+    .workflow {
+      margin-top: 2em;
+      padding: 1em;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .workflow h2 { margin-top: 0; }
+  </style>
+</head>
+<body>
+  <h1>VerifyKYC Application</h1>
+  <div class="workflow">
+    <h2>Workflow Breakdown</h2>
+    <ol>
+      <li><strong>Document Upload:</strong> Accept PDF, PNG, JPEG formats via secure web interface or mobile app.</li>
+      <li><strong>Ease of Use:</strong> Drag-and-drop or camera upload supported.</li>
+      <li><strong>Intelligent Data Extraction:</strong> OCR extracts Name, Date of Birth, Address, ID number, and document validity.</li>
+      <li><strong>Verification:</strong> Automated checks and manual review.</li>
+      <li><strong>Result:</strong> User notified of verification status.</li>
+    </ol>
+  </div>
+  <div class="upload-area" id="upload-area">
+    <p>Drag & drop your PDF, PNG, or JPEG here,<br>or <label for="file-upload" style="color:#007bff;cursor:pointer;">browse</label> to select a file.</p>
+    <input type="file" id="file-upload" accept=".pdf,image/png,image/jpeg" />
+    <p id="file-info"></p>
+  </div>
+  <script>
+    const uploadArea = document.getElementById('upload-area');
+    const fileInput = document.getElementById('file-upload');
+    const fileInfo = document.getElementById('file-info');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+    });
+
+    function handleFiles(files) {
+      if (files.length === 0) return;
+      const file = files[0];
+      const allowedTypes = ['application/pdf', 'image/png', 'image/jpeg'];
+      if (!allowedTypes.includes(file.type)) {
+        fileInfo.textContent = 'Invalid file type. Please upload PDF, PNG, or JPEG.';
+        return;
+      }
+      fileInfo.textContent = `Selected file: ${file.name}`;
+      // TODO: Upload file to server for processing
+    }
+  </script>
+</body>
+</html>
